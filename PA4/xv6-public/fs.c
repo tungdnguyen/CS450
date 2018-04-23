@@ -28,6 +28,7 @@ static void itrunc(struct inode*);
 struct superblock sb;
 int * inode_array;
 int * dir_array;
+//test
 
 // Read the super block.
 void
