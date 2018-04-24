@@ -24,6 +24,8 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int inodeTBWalker(void);
+int directoryWalker(char*);
+
 // ulib.c
 int stat(char*, struct stat*);
 char* strcpy(char*, char*);

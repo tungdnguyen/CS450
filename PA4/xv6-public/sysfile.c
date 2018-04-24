@@ -452,3 +452,11 @@ int sys_inodeTBWalker(void)
   inodeTBWalker();
   return 1;
 }
+//Directory Walker 
+int sys_directoryWalker(void){
+	char *path;
+	if(argstr(0,&path) < 0){
+		return -1;
+	}
+	return directoryWalker(path);
+}

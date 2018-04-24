@@ -696,3 +696,47 @@ int inodeTBWalker(void)
   }
   return 1;
 }
+//directory walker
+int directoryWalker(char *path){
+	struct inode* dp = namei(path);
+	if(dp == 0){
+		//cprintf("Invalid path");
+		return -1;
+	}
+	struct dirent de;
+	ilock(dp);
+	if(dp->type == T_DIR){
+		uint off;
+		for(off = 0; off < dp->size; off += sizeof(de)){
+			if(readi(dp,(char*)&de, off, sizeof(de)) != sizeof(de)){
+				cprintf("dirlink read");
+			}
+			if((strncmp(de.name,".",14) == 0)|| (strncmp(de.name,"..",14) == 0)){
+				continue;
+			}
+			if(de.inum > 0){
+				struct inode* inside = dirlookup(dp, de.name, 0);
+				ilock(inside);
+				if(inside->type == T_DIR){
+					iunlock(inside);
+					cprintf("\tDir %s ",de.name);
+					cprintf("inode %d:\n",de.inum);
+					iunlock(dp);
+					directoryWalker(de.name);
+					ilock(dp);
+				}
+				if(inside->type == T_FILE){
+					iunlock(inside);
+					cprintf("\t%s ",de.name);
+					cprintf("inode %d\n",de.inum);
+				}
+				if(inside->type == T_DEV){
+					iunlock(inside);
+				}
+			}
+			
+		}
+	}
+	iunlock(dp);
+	return 0;
+}
