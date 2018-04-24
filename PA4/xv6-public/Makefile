@@ -176,6 +176,7 @@ UPROGS=\
 	_zombie\
 	_directorywalker\
 	_inodeWalker\
+	_comparewalker\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)

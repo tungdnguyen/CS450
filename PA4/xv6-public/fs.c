@@ -785,7 +785,6 @@ int checkInodeArray(void){
 }
 int compareWalker(void){
 	if((checkDirArray() == -1) || (checkInodeArray() == -1)){
-		cprintf("Nothing allocated");
 		return -1;
 	}
 	int i;
