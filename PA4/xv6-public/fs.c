@@ -21,13 +21,14 @@
 #include "buf.h"
 #include "file.h"
 
+
 #define min(a, b) ((a) < (b) ? (a) : (b))
 static void itrunc(struct inode*);
 // there should be one superblock per disk device, but we run with
 // only one device
 struct superblock sb;
-int * inode_array;
-int * dir_array;
+int inode_array[100] ;
+int dir_array[100];
 //test
 
 // Read the super block.
@@ -38,7 +39,6 @@ readsb(int dev, struct superblock *sb)
 
   bp = bread(dev, 1);
   memmove(sb, bp->data, sizeof(*sb));
-  inode_array = calloc(sb.ninodes, sizeof(int));
   brelse(bp);
 }
 
@@ -694,6 +694,15 @@ int inodeTBWalker(void)
     }
     brelse(bp);
   }
+
+  int i;
+  cprintf("Checkout array\n");
+  for(i=0;i<100;i++)
+  {
+    cprintf("%d",inode_array[i]);
+  }
+  cprintf("\n");
+
   return 1;
 }
 //directory walker
@@ -712,13 +721,17 @@ int directoryWalker(char *path){
 				cprintf("dirlink read");
 			}
 			if((strncmp(de.name,".",14) == 0)|| (strncmp(de.name,"..",14) == 0)){
-				continue;
+        dir_array[de.inum] = 1;
+        cprintf("\t%s ",de.name);
+        cprintf("inode %d\n",de.inum);
+        continue;
 			}
 			if(de.inum > 0){
 				struct inode* inside = dirlookup(dp, de.name, 0);
 				ilock(inside);
 				if(inside->type == T_DIR){
 					iunlock(inside);
+          dir_array[de.inum] = 1;
 					cprintf("\tDir %s ",de.name);
 					cprintf("inode %d:\n",de.inum);
 					iunlock(dp);
@@ -727,6 +740,7 @@ int directoryWalker(char *path){
 				}
 				if(inside->type == T_FILE){
 					iunlock(inside);
+          dir_array[de.inum] = 1;
 					cprintf("\t%s ",de.name);
 					cprintf("inode %d\n",de.inum);
 				}
@@ -734,9 +748,18 @@ int directoryWalker(char *path){
 					iunlock(inside);
 				}
 			}
-			
+
 		}
 	}
 	iunlock(dp);
+
+  int i;
+  cprintf("Checkout array\n");
+  for(i=0;i<100;i++)
+  {
+    cprintf("%d",dir_array[i]);
+  }
+  cprintf("\n");
+
 	return 0;
 }

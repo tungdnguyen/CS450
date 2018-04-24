@@ -174,7 +174,8 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_directorywalker.c
+	_directorywalker\
+	_inodeWalker\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
