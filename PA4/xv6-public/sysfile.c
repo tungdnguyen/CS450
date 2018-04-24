@@ -469,3 +469,8 @@ int sys_damageDirInode(void){
 	}
   return damageInode(inum);
 }
+
+//Compare 2 walkers
+int sys_compareWalker(void){
+	return compareWalker();
+}

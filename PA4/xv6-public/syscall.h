@@ -23,3 +23,4 @@
 #define SYS_directoryWalker 22
 #define SYS_inodeTBWalker 23
 #define SYS_damageDirInode 24
+#define SYS_compareWalker 24

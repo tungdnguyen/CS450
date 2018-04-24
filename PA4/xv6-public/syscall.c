@@ -105,7 +105,11 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_inodeTBWalker(void);
 extern int sys_directoryWalker(void);
+<<<<<<< HEAD
 extern int sys_damageDirInode(void);
+=======
+extern int sys_compareWalker(void);
+>>>>>>> 17b83c487ba92e17c71a6d9268b60b528e34c0ec
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -132,6 +136,7 @@ static int (*syscalls[])(void) = {
 [SYS_inodeTBWalker] sys_inodeTBWalker,
 [SYS_directoryWalker]	sys_directoryWalker,
 [SYS_damageDirInode] sys_damageDirInode
+[SYS_compareWalker]		sys_compareWalker,
 };
 
 void

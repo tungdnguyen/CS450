@@ -26,6 +26,7 @@ int uptime(void);
 int inodeTBWalker(void);
 int directoryWalker(char*);
 int damageDirInode(int);
+int compareWalker(void);
 
 // ulib.c
 int stat(char*, struct stat*);
