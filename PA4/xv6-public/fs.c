@@ -340,6 +340,7 @@ iput(struct inode *ip)
   if(ip->valid && ip->nlink == 0){
     acquire(&icache.lock);
     int r = ip->ref;
+    cprintf("the number of ref is: %d\n",r);
     release(&icache.lock);
     if(r == 1){
       // inode has no links and no other references: truncate and free.
@@ -762,4 +763,27 @@ int directoryWalker(char *path){
   cprintf("\n");
 
 	return 0;
+}
+
+//On success return inum pass into
+int damageInode(int inum)
+{
+  begin_op();
+  struct inode * to_be_del = iget(T_DIR,inum);
+  cprintf("starting\n");
+  ilock(to_be_del);
+  //for(i=0;i<sizeof(to_be_del->addrs);i++)
+  //{
+  //to_be_del->addrs[i] = 0;
+  //}
+
+  //to_be_del->addrs[0] = 0;
+  // to_be_del->ref = 1;
+  // to_be_del -> nlink = 0;
+  itrunc(to_be_del);
+  iunlock(to_be_del);
+  end_op();
+
+
+  return inum;
 }
