@@ -11,6 +11,10 @@ struct stat;
 struct superblock;
 
 int directoryWalker(char *);
+int inodeTBWalker(void);
+int checkDirArray(void);
+int checkInodeArray(void);
+int compareWalker(void);
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);

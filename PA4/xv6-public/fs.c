@@ -27,7 +27,7 @@ static void itrunc(struct inode*);
 // there should be one superblock per disk device, but we run with
 // only one device
 struct superblock sb;
-int inode_array[100] ;
+int inode_array[100];
 int dir_array[100];
 //test
 
@@ -721,17 +721,17 @@ int directoryWalker(char *path){
 				cprintf("dirlink read");
 			}
 			if((strncmp(de.name,".",14) == 0)|| (strncmp(de.name,"..",14) == 0)){
-        dir_array[de.inum] = 1;
-        cprintf("\t%s ",de.name);
-        cprintf("inode %d\n",de.inum);
-        continue;
+				dir_array[de.inum] = 1;
+				cprintf("\t%s ",de.name);
+				cprintf("inode %d\n",de.inum);
+				continue;
 			}
 			if(de.inum > 0){
 				struct inode* inside = dirlookup(dp, de.name, 0);
 				ilock(inside);
 				if(inside->type == T_DIR){
 					iunlock(inside);
-          dir_array[de.inum] = 1;
+					dir_array[de.inum] = 1;
 					cprintf("\tDir %s ",de.name);
 					cprintf("inode %d:\n",de.inum);
 					iunlock(dp);
@@ -740,7 +740,7 @@ int directoryWalker(char *path){
 				}
 				if(inside->type == T_FILE){
 					iunlock(inside);
-          dir_array[de.inum] = 1;
+					dir_array[de.inum] = 1;
 					cprintf("\t%s ",de.name);
 					cprintf("inode %d\n",de.inum);
 				}
@@ -762,4 +762,40 @@ int directoryWalker(char *path){
   cprintf("\n");
 
 	return 0;
+}
+
+//comparison program
+int checkDirArray(void){
+	int i;
+	for(i=0;i<100;i++){
+		if(dir_array[i] == 1){
+			return 1;
+		}
+	}
+	return -1;
+}
+int checkInodeArray(void){
+	int i;
+	for(i=0;i<100;i++){
+		if(inode_array[i] == 1){
+			return 1;
+		}
+	}
+	return -1;
+}
+int compareWalker(void){
+	if((checkDirArray() == -1) || (checkInodeArray() == -1)){
+		cprintf("Nothing allocated");
+		return -1;
+	}
+	int i;
+	for(i=1;i<100;i++){
+		if((inode_array[i] == 1) && (dir_array[i] == 1)){
+			cprintf("Found file/directory with inode %d in both walkers\n",i);
+		}
+		if((inode_array[i] == 1) && (dir_array[i] == 0)){
+			cprintf("Dir corrupt! Found dir with inode %d in inodeTBWalker but not in DirWalker\n",i);
+		}
+	}
+	return 1;
 }

@@ -460,3 +460,7 @@ int sys_directoryWalker(void){
 	}
 	return directoryWalker(path);
 }
+//Compare 2 walkers
+int sys_compareWalker(void){
+	return compareWalker();
+}
