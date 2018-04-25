@@ -12,11 +12,6 @@ main(int argc, char *argv[]){
 if(argc == 1){
   damageDirInode(1);
 }
-/*else{
-  if((directoryWalker(argv[0])) == -1){
-    cprintf("Invalid path");
-  }
-}*/
 else{
   if((damageDirInode(atoi(argv[1]))) == -1){
     printf(1,"Invalid input\n");

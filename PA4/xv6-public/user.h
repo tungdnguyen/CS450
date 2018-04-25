@@ -27,6 +27,7 @@ int inodeTBWalker(void);
 int directoryWalker(char*);
 int damageDirInode(int);
 int compareWalker(void);
+int recovery(void);
 
 // ulib.c
 int stat(char*, struct stat*);

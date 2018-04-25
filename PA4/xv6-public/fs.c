@@ -20,7 +20,7 @@
 #include "fs.h"
 #include "buf.h"
 #include "file.h"
-
+#include "syscall.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 static void itrunc(struct inode*);
@@ -29,6 +29,7 @@ static void itrunc(struct inode*);
 struct superblock sb;
 int inode_array[100];
 int dir_array[100];
+int compare_array[100];
 //test
 
 // Read the super block.
@@ -312,7 +313,9 @@ ilock(struct inode *ip)
     brelse(bp);
     ip->valid = 1;
     if(ip->type == 0)
+    {
       panic("ilock: no type");
+    }
   }
 }
 
@@ -679,6 +682,11 @@ nameiparent(char *path, char *name)
 //inodeTBWalker Implementation
 int inodeTBWalker(void)
 {
+  int i;
+  for(i=0;i<100;i++)
+  {
+    inode_array[i] = 0;
+  }
 
   //starting to find the allocated blocks
   int inum;
@@ -695,14 +703,6 @@ int inodeTBWalker(void)
     }
     brelse(bp);
   }
-
-  int i;
-  cprintf("Checkout array\n");
-  for(i=0;i<100;i++)
-  {
-    cprintf("%d",inode_array[i]);
-  }
-  cprintf("\n");
 
   return 1;
 }
@@ -747,6 +747,7 @@ int directoryWalker(char *path){
 				}
 				if(inside->type == T_DEV){
 					iunlock(inside);
+          dir_array[de.inum] = 1;
 				}
 			}
 
@@ -754,38 +755,43 @@ int directoryWalker(char *path){
 	}
 	iunlock(dp);
 
-  int i;
-  cprintf("Checkout array\n");
-  for(i=0;i<100;i++)
-  {
-    cprintf("%d",dir_array[i]);
-  }
-  cprintf("\n");
-
 	return 0;
 }
 
 //On success return inum pass into
 int damageInode(int inum)
 {
+
+  if((inum<=1)||(inum>=100))
+  {
+    cprintf("You can't damage root\n");
+    return -1;
+  }
   begin_op();
   struct inode * to_be_del = iget(T_DIR,inum);
   cprintf("starting\n");
+  if(to_be_del->type != T_DIR)
+  {
+    cprintf("This is not a directory\n");
+    return -1;
+  }
   ilock(to_be_del);
-  //for(i=0;i<sizeof(to_be_del->addrs);i++)
-  //{
-  //to_be_del->addrs[i] = 0;
-  //}
-
-  //to_be_del->addrs[0] = 0;
-  // to_be_del->ref = 1;
-  // to_be_del -> nlink = 0;
   itrunc(to_be_del);
-  iunlock(to_be_del);
+  iunlockput(to_be_del);
   end_op();
+
+  cprintf("Finished damaging inode %d\n !! Re init 2 walkers for further comparision\n");
+  int i;
+  for(i=0;i<100;i++)
+  {
+    dir_array[i] = 0;
+  }
+  directoryWalker(".");
+  inodeTBWalker();
 
 
   return inum;
+}
 //comparison program
 int checkDirArray(void){
 	int i;
@@ -818,6 +824,32 @@ int compareWalker(void){
 		if((inode_array[i] == 1) && (dir_array[i] == 0)){
 			cprintf("Dir corrupt! Found dir with inode %d in inodeTBWalker but not in DirWalker\n",i);
 		}
+    if((inode_array[i] == 0) && (dir_array[i] == 1)){
+      cprintf("Dir corrupt! Found dir with inode %d in DirWalker but not in inodeTBWalker\n",i);
+    }
+    compare_array[i] = inode_array[i]^dir_array[i];
 	}
+
 	return 1;
+}
+
+int recoverWalker(struct inode * recovery_dir){
+  //struct inode * recover = iget(T_DIR,1);
+ struct inode *dp = iget(T_DIR,1);
+ char name = 'a';
+  int i;
+  for(i=1;i<100;i++){
+    if (compare_array[i] == 1)
+    {
+      char *name_f = &name;
+      name_f[1] = '\0';
+      begin_op();
+      cprintf("Trying to recover %d \n",i);
+      dirlink(dp,name_f,i);
+      cprintf("Recovered %d \n",i);
+      end_op();
+      name++;
+    }
+  }
+  return 1;
 }

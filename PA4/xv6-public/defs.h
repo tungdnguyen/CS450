@@ -59,7 +59,7 @@ void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 int             inodeTBWalker(void);
 int             damageInode(int inum);
-
+int             recoverWalker();
 // ide.c
 void            ideinit(void);
 void            ideintr(void);

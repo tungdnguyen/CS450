@@ -474,3 +474,7 @@ int sys_damageDirInode(void){
 int sys_compareWalker(void){
 	return compareWalker();
 }
+
+int sys_recovery(void){
+	return recoverWalker();
+}

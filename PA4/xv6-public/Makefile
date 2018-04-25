@@ -174,11 +174,13 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_directorywalker\
+	_directoryWalker\
 	_inodeWalker\
 	_damageInode\
-	_comparewalker\
-	
+	_compareWalker\
+	_recoveryInode\
+	_mkdirTest\
+
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
 
