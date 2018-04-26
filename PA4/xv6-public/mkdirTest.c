@@ -35,10 +35,10 @@ void case1(void){
 	mkdir("tmp");
 	int fd;
 	fd = open("./tmp/sample.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 1\n",6);
 	close(fd);
 	fd = open("./tmp/sample1.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 2\n",6);
 	close(fd);
 }
 
@@ -48,17 +48,17 @@ void case2(void){
 	mkdir("./tmp/tmp_2");
 	int fd;
 	fd = open("./tmp/tmp_1/sample2.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 3\n",6);
 	close(fd);
 	fd = open("./tmp/tmp_1/sample3.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 4\n",6);
 	close(fd);
 	fd = open("./tmp/tmp_2/sample4.txt",O_CREATE|O_RDWR);
 	printf(1,"sample4\n");
-	write(fd,"hi\n",3);
+	write(fd,"hi 5\n",6);
 	close(fd);
 	fd = open("./tmp/tmp_2/sample5.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 6\n",6);
 	close(fd);
 }
 void case3(void){
@@ -67,12 +67,12 @@ void case3(void){
 	mkdir("./tmp1/tmp1_1");
 	int fd;
 	fd = open("./tmp1/sample6.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 7\n",6);
 	close(fd);
 	fd = open("./tmp1/sample7.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 8\n",6);
 	close(fd);
 	fd = open("./tmp1/tmp1_1/sample8.txt",O_CREATE|O_RDWR);
-	write(fd,"hi\n",3);
+	write(fd,"hi 9\n",6);
 	close(fd);
 }

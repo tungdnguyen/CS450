@@ -175,8 +175,8 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_directoryWalker\
-	_inodeWalker\
-	_damageInode\
+	_inodeTBWalker\
+	_damageDirInode\
 	_compareWalker\
 	_recoveryInode\
 	_mkdirTest\
